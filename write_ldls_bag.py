@@ -53,8 +53,8 @@ def msg_to_detections(result_msg):
     rois = None # not needed
     bridge = CvBridge()
     if len(result_msg.masks) == 0:
-        shape = ()
-        masks = np.array([])
+        shape = (1208, 1920)
+        masks = np.empty((1208, 1920, 0))
     else:
         masks_list = [bridge.imgmsg_to_cv2(m, 'mono8') for m in result_msg.masks]
         shape = masks_list[0].shape
@@ -109,11 +109,13 @@ def write_bag(input_path, output_path, mrcnn_results_topic, lidar_topic):
 
     # Write all input messages to the output
     print("Reading messages...")
-    for topic, msg, t in inbag.read_messages():
-        outbag.write(topic, msg, t)
+    # for topic, msg, t in inbag.read_messages():
+    #     outbag.write(topic, msg, t)
+
+    start_time = rospy.Time.from_sec(inbag.get_start_time() + 110)
 
     # Generate LDLS results
-    for topic, msg, t in inbag.read_messages(topics=[lidar_topic]):
+    for topic, msg, t in inbag.read_messages(topics=[lidar_topic], start_time=start_time):
         point_gen = read_points(msg)
         points = np.array([p for p in point_gen])
         lidar_list.append(points[:,0:3])
@@ -122,7 +124,7 @@ def write_bag(input_path, output_path, mrcnn_results_topic, lidar_topic):
     print("Running LDLS...")
     lidarseg = LidarSegmentation(projection)
     i=0
-    for topic, msg, t in inbag.read_messages(topics=[mrcnn_results_topic]):
+    for topic, msg, t in inbag.read_messages(topics=[mrcnn_results_topic], start_time=start_time):
         if i % 50 == 0:
             print("Message %d..." % i)
         detections = msg_to_detections(msg)
