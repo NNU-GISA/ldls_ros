@@ -112,10 +112,10 @@ def write_bag(input_path, output_path, mrcnn_results_topic, lidar_topic):
     # for topic, msg, t in inbag.read_messages():
     #     outbag.write(topic, msg, t)
 
-    start_time = rospy.Time.from_sec(inbag.get_start_time() + 110)
+    # start_time = rospy.Time.from_sec(inbag.get_start_time() + 110)
 
     # Generate LDLS results
-    for topic, msg, t in inbag.read_messages(topics=[lidar_topic], start_time=start_time):
+    for topic, msg, t in inbag.read_messages(topics=[lidar_topic]):
         point_gen = read_points(msg)
         points = np.array([p for p in point_gen])
         lidar_list.append(points[:,0:3])
@@ -124,7 +124,7 @@ def write_bag(input_path, output_path, mrcnn_results_topic, lidar_topic):
     print("Running LDLS...")
     lidarseg = LidarSegmentation(projection)
     i=0
-    for topic, msg, t in inbag.read_messages(topics=[mrcnn_results_topic], start_time=start_time):
+    for topic, msg, t in inbag.read_messages(topics=[mrcnn_results_topic]):
         if i % 50 == 0:
             print("Message %d..." % i)
         detections = msg_to_detections(msg)
