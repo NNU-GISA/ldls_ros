@@ -109,8 +109,8 @@ def write_bag(input_path, output_path, mrcnn_results_topic, lidar_topic):
 
     # Write all input messages to the output
     print("Reading messages...")
-    # for topic, msg, t in inbag.read_messages():
-    #     outbag.write(topic, msg, t)
+    for topic, msg, t in inbag.read_messages():
+        outbag.write(topic, msg, t)
 
     # start_time = rospy.Time.from_sec(inbag.get_start_time() + 110)
 
