@@ -167,6 +167,6 @@ if __name__ == '__main__':
     bag_path = args.bagfile
     if not os.path.exists(bag_path):
         raise IOError("Bag file '%s' not found" % bag_path)
-    out_name = 'ldls.bag'
+    out_name = bag_path.split('.bag')[0] + '_ldls.bag'
     write_bag(bag_path, out_name, mrcnn_results_topic, lidar_topic)
 
