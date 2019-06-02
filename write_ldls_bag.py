@@ -128,6 +128,7 @@ def write_bag(input_path, output_path, mrcnn_results_topic, lidar_topic):
         if i % 50 == 0:
             print("Message %d..." % i)
         detections = msg_to_detections(msg)
+        # Get the class IDs, names, header from the MRCNN message
         class_ids = msg.class_ids
         class_names = list(msg.class_names)
         lidar = lidar_list[i]
@@ -136,16 +137,22 @@ def write_bag(input_path, output_path, mrcnn_results_topic, lidar_topic):
         lidar = lidar[ldls_res.in_camera_view,:]
 
         ldls_msg = Segmentation()
+        ldls_msg.header = header
         ldls_msg.class_ids = class_ids
         ldls_msg.class_names = class_names
+        instance_ids = []
         pc_msgs = []
         # Get segmented point cloud for each object instance
         labels = ldls_res.instance_labels()
         class_labels = ldls_res.class_labels()
         for inst in range(1, len(class_names)+1):
-            inst_points = lidar[labels == inst,:]
-            pc_msg = create_cloud_xyz32(header, inst_points)
-            pc_msgs.append(pc_msg)
+            in_instance = labels == inst
+            if np.any(in_instance):
+                instance_ids.append(inst-1)
+                inst_points = lidar[in_instance,:]
+                pc_msg = create_cloud_xyz32(header, inst_points)
+                pc_msgs.append(pc_msg)
+        ldls_msg.instance_ids = instance_ids
         ldls_msg.object_points = pc_msgs
         foreground = lidar[class_labels != 0, :]
         foreground_msg = create_cloud_xyz32(header, foreground)
