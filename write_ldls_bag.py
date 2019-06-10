@@ -90,6 +90,7 @@ def write_bag(input_path, output_path, mrcnn_results_topic, lidar_topic):
     if not os.path.exists(mrcnn_directory):
         os.mkdir(mrcnn_directory)
 
+    # Lidar-to-camera rotation and translation
     R = np.array([[0.6979, -0.7161, -0.0112],
                 [-0.0184, -0.0023, -0.9998],
                 [0.7160, 0.6980, -0.0148]])
@@ -100,6 +101,7 @@ def write_bag(input_path, output_path, mrcnn_results_topic, lidar_topic):
     Tr[0:3, 3] = T
     Tr[3,3] = 1
 
+    # Camera intrinsics matrix
     intrins = 1.0e3 * np.array([[1.8239, 0, 0],
                                 [-0.0042, 1.8228, 0],
                                 [0.9743, 0.6661, 0.0010]])
