@@ -1,5 +1,5 @@
 # LDLS ROS
-ROS code for LDLS (Label Diffusion Lidar Segmentation)
+ROS package for LDLS (Label Diffusion Lidar Segmentation)
 
 Currently, this code only supports offline processing by reading lidar point clouds and camera images from an input rosbag, and then writing Mask-RCNN and LDLS results to an output rosbag.
 It is assumed that the input rosbag includes one lidar point cloud for each image, and vice versa, and the two are synchronized in time.
