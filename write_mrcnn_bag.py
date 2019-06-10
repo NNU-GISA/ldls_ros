@@ -247,6 +247,7 @@ if __name__ == '__main__':
     bag_path = args.bagfile
     if not os.path.exists(bag_path):
         raise IOError("Bag file '%s' not found" % bag_path)
-    out_name = bag_path.split('.bag')[0] + '_mrcnn.bag'
+    #out_name = bag_path.split('.bag')[0] + '_mrcnn.bag'
+    out_name = 'mrcnn.bag'
     write_bag(bag_path, out_name, image_topic)
 
